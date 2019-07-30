@@ -1,9 +1,10 @@
 from googletrans import Translator
-#from random import *
 import random
 from gtts import gTTS
 import vlc
-import tkinter as tk
+import Tkinter as tk
+#import tkinter as tk !!(for python 3)!!!
+
 
 
 def translate():
@@ -19,17 +20,28 @@ def translate():
         #if(x>0):
         sendstr = sendstr + trstr[2*x]
         sendstr = sendstr + trstr[2*x - 1] + " "
-        '''
+
         if (random.randint(1, 8) == 4):
-            sendstr += " "
-        '''
+            sendstr += " qe "
 
 
-    #if len(sendstr) < 24:
-    sendstr = "qe " * 10 + sendstr
-    print(sendstr)
-    endStr = translator.translate(sendstr, src = "so", dest = "en").text
-    print(doctorAnswer)
+
+    #sendstr = "qm " * 10 + sendstr
+    print("Sending string "+sendstr)
+
+    #detecting sendstr language (for better translation)
+    detected_language = str(translator.detect(sendstr));
+    #cut off unnecessary info
+    detected_language = detected_language[14:18]
+    if(detected_language[2]==","):
+        detected_language = detected_language[0:2]
+    elif(detected_language[3]==","):
+        detected_language = detected_language[0:3]
+
+    print("Detected language: " + detected_language)
+
+    endStr = translator.translate(sendstr, src = detected_language, dest = "en").text
+    print("Answer: "+endStr)
     tts = gTTS(endStr, lang='en')
     tts.save('answer.mp3')
     player = vlc.MediaPlayer("answer.mp3")
@@ -65,4 +77,3 @@ doctorAnswer.grid(column = 0, row = 3)
 b1 = tk.Button(root, text='Show', command=translate)
 b1.grid(column = 2, row = 2)
 root.mainloop()
-print("Your Google Translate-Doctor will now answer your question")
